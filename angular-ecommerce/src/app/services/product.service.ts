@@ -10,7 +10,6 @@ import { ProductCategory } from '../common/product-category';
 })
 export class ProductService {
 
-
   private baseUrl = 'http://localhost:8080/api/products';
   private categoryUrl = 'http://localhost:8080/api/product-category';
 
@@ -18,12 +17,27 @@ export class ProductService {
 
   constructor(private httpClient: HttpClient) { }
 
+  // ************************* Begin of services methods ********************************************************
 
   getProductList(theCategoryId: number): Observable<Product[]> {
 
     //@TODO / NEED TO BUILD url BASED ON CATEGORY ID
 
     const searchUrl = `${this.baseUrl}/search/findByCategoryId?id=${theCategoryId}`;
+
+    return this.getProducts(searchUrl);
+  }
+
+  searchProducts(theKeyword: string): Observable<Product[]> {
+
+    //URL building based on the Keyword
+    const searchUrl = `${this.baseUrl}/search/findByNameContaining?name=${theKeyword}`;
+
+    return this.getProducts(searchUrl);
+  }
+
+  // method extarcted to get products
+  private getProducts(searchUrl: string): Observable<Product[]> {
 
     return this.httpClient.get<GetResponseProducts>(searchUrl).pipe(
       map(response => response._embedded.products)
@@ -37,7 +51,7 @@ export class ProductService {
     );
 
   }
-
+  // *******************************************End of services Methodhs************************************************
 
 }
 
